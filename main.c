@@ -4,6 +4,7 @@
 #define BLUE    "\033[1;34m"
 #define GREEN   "\033[1;32m"
 #define YELLOW  "\033[1;33m"
+#define CYAN    "\033[1;36m"
 #define RESET   "\033[0m"
 
 void get_cpu_info() {
@@ -43,17 +44,29 @@ void get_ram_info() {
     pclose(fp);
     printf(YELLOW "Total RAM:" RESET " %.2f GB\n", atof(buffer) / 1024 / 1024);
 
-    // Free RAM
+    // Available RAM
     fp = popen("grep 'MemAvailable' /proc/meminfo | awk '{print $2}'", "r");
     fgets(buffer, sizeof(buffer), fp);
     pclose(fp);
     printf(YELLOW "Available RAM:" RESET " %.2f GB\n", atof(buffer) / 1024 / 1024);
+}
+
+void get_desktop_env() {
+    FILE *fp;
+    char buffer[128];
+
+    // Checking DE (Desktop Environment)
+    fp = popen("echo $XDG_CURRENT_DESKTOP", "r");
+    fgets(buffer, sizeof(buffer), fp);
+    pclose(fp);
     
+    printf(CYAN "Desktop Environment:" RESET " %s\n", buffer);
     printf(BLUE "--------------------------------\n" RESET);
 }
 
 int main() {
     get_cpu_info();
     get_ram_info();
+    get_desktop_env();
     return 0;
 }
