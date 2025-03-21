@@ -20,24 +20,15 @@ gcc --version
 
 2️⃣ Dastur kodini yuklab olish:
 
-bash
-Copy
-Edit
 git clone https://github.com/umarovcoder/cpu-info.git
 cd System-Info
 
 
 3️⃣ Kompilyatsiya qilish:
 
-bash
-Copy
-Edit
 gcc main.c -o sysinfo
 
 
 4️⃣ Ishga tushirish:
 
-bash
-Copy
-Edit
 ./sysinfo
