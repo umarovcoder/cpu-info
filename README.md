@@ -10,8 +10,6 @@
 ## 📸 **Ishlash jarayoni**
 ![System Info](https://user-images.githubusercontent.com/XXXXX/demo.gif)
 
----
-
 ## 🚀 **O‘rnatish va ishga tushirish**
 
 **1️⃣ GCC kompilatorini tekshirish:**
