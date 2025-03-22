@@ -12,8 +12,10 @@ Bu dastur **Linux tizimida** **CPU, RAM, GPU va Desktop Environment (DE)** haqid
 ✅ **DE** – Qaysi Desktop Environment ekanligini ko‘rsatadi  
 
 ## ⚡ Ishlatish
+1️⃣ Dastur kodini yuklab olish
 ```bash
+git clone https://github.com/umarovcoder/cpu-info.git
+cd cpu-info
 gcc main.c -o sys_info
 ./sys_info
 
-./sysinfo
