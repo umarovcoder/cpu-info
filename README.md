@@ -32,3 +32,5 @@ gcc main.c -o sysinfo
 4️⃣ Ishga tushirish:
 
 ./sysinfo
+
+

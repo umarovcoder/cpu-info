@@ -1,72 +1,69 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <sys/sysinfo.h>
+#include <unistd.h>
 
-#define BLUE    "\033[1;34m"
-#define GREEN   "\033[1;32m"
-#define YELLOW  "\033[1;33m"
-#define CYAN    "\033[1;36m"
-#define RESET   "\033[0m"
-
+// CPU ma'lumotini olish
 void get_cpu_info() {
-    FILE *fp;
-    char buffer[128];
-
-    // CPU Model
-    printf(BLUE "--------------------------------\n" RESET);
-    printf(BLUE "|        SYSTEM INFORMATION    |\n" RESET);
-    printf(BLUE "--------------------------------\n" RESET);
-
-    fp = popen("grep 'model name' /proc/cpuinfo | head -1 | cut -d':' -f2", "r");
-    fgets(buffer, sizeof(buffer), fp);
-    pclose(fp);
-    printf(GREEN "CPU Model:" RESET " %s", buffer);
-
-    // CPU Cores
-    fp = popen("grep -c '^processor' /proc/cpuinfo", "r");
-    fgets(buffer, sizeof(buffer), fp);
-    pclose(fp);
-    printf(GREEN "CPU Cores:" RESET " %s", buffer);
-
-    // CPU Speed
-    fp = popen("lscpu | grep 'CPU MHz' | awk '{print $3}'", "r");
-    fgets(buffer, sizeof(buffer), fp);
-    pclose(fp);
-    printf(GREEN "CPU Speed:" RESET " %s MHz\n", buffer);
+    long num_procs = sysconf(_SC_NPROCESSORS_ONLN);
+    printf("🖥  CPU: %ld cores\n", num_procs);
 }
 
+// RAM ma'lumotini olish
 void get_ram_info() {
+    struct sysinfo info;
+    if (sysinfo(&info) == 0) {
+        printf("💾 RAM: %.2f GB total, %.2f GB available\n",
+               (double)info.totalram / (1024 * 1024 * 1024),
+               (double)info.freeram / (1024 * 1024 * 1024));
+    } else {
+        printf("💾 RAM ma'lumotini olishda xatolik!\n");
+    }
+}
+
+// GPU ma'lumotini olish
+void get_gpu_info() {
     FILE *fp;
     char buffer[128];
 
-    // Total RAM
-    fp = popen("grep 'MemTotal' /proc/meminfo | awk '{print $2}'", "r");
-    fgets(buffer, sizeof(buffer), fp);
-    pclose(fp);
-    printf(YELLOW "Total RAM:" RESET " %.2f GB\n", atof(buffer) / 1024 / 1024);
+    fp = popen("lspci | grep -i vga", "r");
+    if (fp == NULL) {
+        printf("🎮 GPU ma'lumotini olishda xatolik!\n");
+        return;
+    }
 
-    // Available RAM
-    fp = popen("grep 'MemAvailable' /proc/meminfo | awk '{print $2}'", "r");
-    fgets(buffer, sizeof(buffer), fp);
+    printf("🎮 GPU: ");
+    while (fgets(buffer, sizeof(buffer), fp) != NULL) {
+        printf("%s", buffer);
+    }
     pclose(fp);
-    printf(YELLOW "Available RAM:" RESET " %.2f GB\n", atof(buffer) / 1024 / 1024);
 }
 
+// Desktop Environment (DE) ni aniqlash
 void get_desktop_env() {
     FILE *fp;
     char buffer[128];
 
-    // Checking DE (Desktop Environment)
     fp = popen("echo $XDG_CURRENT_DESKTOP", "r");
-    fgets(buffer, sizeof(buffer), fp);
+    if (fp == NULL) {
+        printf("🖥  DE ma'lumotini olishda xatolik!\n");
+        return;
+    }
+
+    if (fgets(buffer, sizeof(buffer), fp) != NULL) {
+        printf("🖥  Desktop Environment: %s", buffer);
+    } else {
+        printf("🖥  Desktop Environment topilmadi!\n");
+    }
     pclose(fp);
-    
-    printf(CYAN "Desktop Environment:" RESET " %s\n", buffer);
-    printf(BLUE "--------------------------------\n" RESET);
 }
 
 int main() {
+    printf("\n🚀 System Info Detector 🚀\n");
     get_cpu_info();
     get_ram_info();
+    get_gpu_info();
     get_desktop_env();
+    printf("\n");
     return 0;
 }
