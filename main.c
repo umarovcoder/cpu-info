@@ -1,69 +1,71 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <sys/sysinfo.h>
-#include <unistd.h>
 
-// CPU ma'lumotini olish
-void get_cpu_info() {
-    long num_procs = sysconf(_SC_NPROCESSORS_ONLN);
-    printf("🖥  CPU: %ld cores\n", num_procs);
+void getCPUInfo() {
+    printf("\n🖥  CPU ma'lumotlari:\n");
+    system("nproc");
 }
 
-// RAM ma'lumotini olish
-void get_ram_info() {
-    struct sysinfo info;
-    if (sysinfo(&info) == 0) {
-        printf("💾 RAM: %.2f GB total, %.2f GB available\n",
-               (double)info.totalram / (1024 * 1024 * 1024),
-               (double)info.freeram / (1024 * 1024 * 1024));
-    } else {
-        printf("💾 RAM ma'lumotini olishda xatolik!\n");
-    }
+void getRAMInfo() {
+    printf("\n💾 RAM ma'lumotlari:\n");
+    system("free -h | grep Mem");
 }
 
-// GPU ma'lumotini olish
-void get_gpu_info() {
-    FILE *fp;
-    char buffer[128];
-
-    fp = popen("lspci | grep -i vga", "r");
-    if (fp == NULL) {
-        printf("🎮 GPU ma'lumotini olishda xatolik!\n");
-        return;
-    }
-
-    printf("🎮 GPU: ");
-    while (fgets(buffer, sizeof(buffer), fp) != NULL) {
-        printf("%s", buffer);
-    }
-    pclose(fp);
+void getGPUInfo() {
+    printf("\n🎮 GPU ma'lumotlari:\n");
+    system("lspci | grep VGA");
 }
 
-// Desktop Environment (DE) ni aniqlash
-void get_desktop_env() {
-    FILE *fp;
-    char buffer[128];
-
-    fp = popen("echo $XDG_CURRENT_DESKTOP", "r");
-    if (fp == NULL) {
-        printf("🖥  DE ma'lumotini olishda xatolik!\n");
-        return;
-    }
-
-    if (fgets(buffer, sizeof(buffer), fp) != NULL) {
-        printf("🖥  Desktop Environment: %s", buffer);
-    } else {
-        printf("🖥  Desktop Environment topilmadi!\n");
-    }
-    pclose(fp);
+void getDEInfo() {
+    printf("\n🖥  Desktop Environment (DE):\n");
+    system("echo $XDG_CURRENT_DESKTOP");
 }
+
+void getTemperature() {
+    printf("\n🌡  Harorat ma'lumotlari:\n");
+    system("sensors | grep 'Core' || echo 'Sensor topilmadi'");
+}
+
+void getDiskInfo() {
+    printf("\n💽 Disk ma'lumotlari:\n");
+    system("df -h --total | grep 'total'");
+}
+
+void getOSInfo() {
+    printf("\n🖥  Operatsion tizim ma'lumotlari:\n");
+    system("cat /etc/os-release | grep PRETTY_NAME");
+}
+
+void getUptime() {
+    printf("\n⏳ Ishlash vaqti:\n");
+    system("uptime -p");
+}
+
+void getInternetSpeed() {
+    printf("\n🌍 Internet tezligi:\n");
+    system("speedtest-cli --simple || echo \"speedtest-cli o'rnatilmagan\"");
+}
+
+
+void getCPULoad() {
+    printf("\n🚀 CPU yuklamasi:\n");
+    system("top -bn1 | grep 'Cpu(s)' | awk '{print $2 + $4 \"% loaded\"}'");
+}
+
 
 int main() {
-    printf("\n🚀 System Info Detector 🚀\n");
-    get_cpu_info();
-    get_ram_info();
-    get_gpu_info();
-    get_desktop_env();
-    printf("\n");
+    printf("\n🔥 Linux tizim ma'lumotlari\n");
+    printf("====================================\n");
+    getCPUInfo();
+    getRAMInfo();
+    getGPUInfo();
+    getDEInfo();
+    getTemperature();
+    getDiskInfo();
+    getOSInfo();
+    getUptime();
+    getInternetSpeed();
+    getCPULoad();
+    printf("====================================\n");
     return 0;
 }
