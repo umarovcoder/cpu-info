@@ -1,6 +1,16 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+void getCPUTemperature() {
+    printf("\n🌡️ CPU harorati:\n");
+    system("sensors | grep 'Core 0' | awk '{print $3}' || echo 'lm-sensors o‘rnatilmagan'");
+}
+
+void getRAMUsage() {
+    printf("\n💾 RAM yuklanishi:\n");
+    system("free -h | awk 'NR==2{print \"Jami: \" $2 \" | Ishlatilgan: \" $3 \" | Bo‘sh: \" $4}'");
+}
+
 void getCPUInfo() {
     printf("\n🖥  CPU ma'lumotlari:\n");
     system("nproc");
@@ -59,6 +69,8 @@ int main() {
     getCPUInfo();
     getRAMInfo();
     getGPUInfo();
+    getCPUTemperature();  // 🆕 CPU harorati
+    getRAMUsage();        // 🆕 RAM yuklanishi
     getDEInfo();
     getTemperature();
     getDiskInfo();
