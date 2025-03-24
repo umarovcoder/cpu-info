@@ -1,6 +1,12 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+void getTopRAMProcesses() {
+    printf("\n🔝 Eng ko‘p RAM ishlatayotgan jarayonlar:\n");
+    system("ps aux --sort=-%mem | awk 'NR<=6 {print $1, $2, $4\"%\", $11}'");
+}
+
+
 void getCPUTemperature() {
     printf("\n🌡️ CPU harorati:\n");
     system("sensors | grep 'Core 0' | awk '{print $3}' || echo 'lm-sensors o‘rnatilmagan'");
@@ -78,6 +84,7 @@ int main() {
     getUptime();
     getInternetSpeed();
     getCPULoad();
+    getTopRAMProcesses();  // 🆕 Eng ko‘p RAM ishlatayotgan jarayonlar
     printf("====================================\n");
     return 0;
 }
