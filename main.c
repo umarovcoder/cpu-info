@@ -1,9 +1,23 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+void getTopCPUProcesses() {
+    printf("\n🔴 Eng ko‘p CPU ishlatayotgan jarayonlar:\n");
+    printf("=========================================================\n");
+    printf("| %-6s | %-10s | %-6s | %-6s | %-s \n", "PID", "User", "CPU%", "RAM%", "Command");
+    printf("=========================================================\n");
+    system("ps aux --sort=-%cpu | awk 'NR==1 || NR<=6 {printf(\"| %-6s | %-10s | %-6s | %-6s | %-s \\n\", $2, $1, $3, $4, $11)}'");
+    printf("=========================================================\n");
+}
+
+
 void getTopRAMProcesses() {
-    printf("\n🔝 Eng ko‘p RAM ishlatayotgan jarayonlar:\n");
-    system("ps aux --sort=-%mem | awk 'NR<=6 {print $1, $2, $4\"%\", $11}'");
+    printf("\n🟢 Eng ko‘p RAM ishlatayotgan jarayonlar:\n");
+    printf("=========================================================\n");
+    printf("| %-6s | %-10s | %-6s | %-6s | %-s \n", "PID", "User", "CPU%", "RAM%", "Command");
+    printf("=========================================================\n");
+    system("ps aux --sort=-%mem | awk 'NR==1 || NR<=6 {printf(\"| %-6s | %-10s | %-6s | %-6s | %-s \\n\", $2, $1, $3, $4, $11)}'");
+    printf("=========================================================\n");
 }
 
 
@@ -57,11 +71,6 @@ void getUptime() {
     system("uptime -p");
 }
 
-void getInternetSpeed() {
-    printf("\n🌍 Internet tezligi:\n");
-    system("speedtest-cli --simple || echo \"speedtest-cli o'rnatilmagan\"");
-}
-
 
 void getCPULoad() {
     printf("\n🚀 CPU yuklamasi:\n");
@@ -82,9 +91,9 @@ int main() {
     getDiskInfo();
     getOSInfo();
     getUptime();
-    getInternetSpeed();
     getCPULoad();
     getTopRAMProcesses();  // 🆕 Eng ko‘p RAM ishlatayotgan jarayonlar
+    getTopCPUProcesses();  // 🆕 Eng ko‘p CPU ishlatayotgan jarayonlar
     printf("====================================\n");
     return 0;
 }
