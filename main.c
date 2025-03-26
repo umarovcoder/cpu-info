@@ -1,6 +1,37 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#include <stdio.h>
+#include <stdlib.h>
+
+void getBatteryStatus() {
+    FILE *fp;
+    int battery;
+    char status[16];
+
+    // Batareya foizini olish
+    fp = fopen("/sys/class/power_supply/BAT0/capacity", "r");
+    if (fp == NULL) {
+        printf("\n🔋 Batareya ma'lumoti olinmadi.\n");
+        return;
+    }
+    fscanf(fp, "%d", &battery);
+    fclose(fp);
+
+    // Batareyaning hozirgi holatini olish (Charging yoki Discharging)
+    fp = fopen("/sys/class/power_supply/BAT0/status", "r");
+    if (fp == NULL) {
+        printf("\n🔋 Holati aniqlanmadi.\n");
+        return;
+    }
+    fscanf(fp, "%15s", status);
+    fclose(fp);
+
+    // Natijani chiqarish
+    printf("\n🔋 Batareya: %d%% (%s)\n", battery, status);
+}
+
+
 void getTopCPUProcesses() {
     printf("\n🔴 Eng ko‘p CPU ishlatayotgan jarayonlar:\n");
     printf("=========================================================\n");
@@ -94,6 +125,7 @@ int main() {
     getCPULoad();
     getTopRAMProcesses();  // 🆕 Eng ko‘p RAM ishlatayotgan jarayonlar
     getTopCPUProcesses();  // 🆕 Eng ko‘p CPU ishlatayotgan jarayonlar
+    getBatteryStatus();
     printf("====================================\n");
     return 0;
 }
