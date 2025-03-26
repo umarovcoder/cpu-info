@@ -4,32 +4,37 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#include <stdio.h>
+#include <stdlib.h>
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <unistd.h>
+
 void getBatteryStatus() {
     FILE *fp;
     int battery;
     char status[16];
 
-    // Batareya foizini olish
-    fp = fopen("/sys/class/power_supply/BAT0/capacity", "r");
-    if (fp == NULL) {
-        printf("\n🔋 Batareya ma'lumoti olinmadi.\n");
-        return;
-    }
-    fscanf(fp, "%d", &battery);
-    fclose(fp);
+    // Foydalanuvchi tizimiga qarab avtomatik aniqlash
+    char battery0_path[] = "/sys/class/power_supply/BAT0/capacity";
+    char status0_path[] = "/sys/class/power_supply/BAT0/status";
+    char battery1_path[] = "/sys/class/power_supply/BAT1/capacity";
+    char status1_path[] = "/sys/class/power_supply/BAT1/status";
 
-    // Batareyaning hozirgi holatini olish (Charging yoki Discharging)
-    fp = fopen("/sys/class/power_supply/BAT0/status", "r");
-    if (fp == NULL) {
-        printf("\n🔋 Holati aniqlanmadi.\n");
-        return;
-    }
-    fscanf(fp, "%15s", status);
-    fclose(fp);
+    char *battery_path = NULL;
+    char *status_path = NULL;
 
-    // Natijani chiqarish
-    printf("\n🔋 Batareya: %d%% (%s)\n", battery, status);
-}
+    // Avval BAT0 ni tekshiramiz
+    if (access(battery0_path, F_OK) == 0) {
+        battery_path = battery0_path;
+        status_path = status0_path;
+    } 
+    // Agar BAT0 yo‘q bo‘lsa, BAT1 ni tekshiramiz
+    else if (access(battery1_path, F_OK) == 0) {
+        battery_path = battery1_path;
+        status_path = status1_path;
+    } 
 
 
 void getTopCPUProcesses() {
@@ -126,6 +131,11 @@ int main() {
     getTopRAMProcesses();  // 🆕 Eng ko‘p RAM ishlatayotgan jarayonlar
     getTopCPUProcesses();  // 🆕 Eng ko‘p CPU ishlatayotgan jarayonlar
     getBatteryStatus();
+    int main() {
+    getBatteryStatus();
+    return 0;
+}
+
     printf("====================================\n");
     return 0;
 }
